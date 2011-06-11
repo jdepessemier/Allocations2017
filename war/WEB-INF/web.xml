@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	<servlet>
+		<servlet-name>greetServlet</servlet-name>
+		<servlet-class>miro.server.GreetingServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>greetServlet</servlet-name>
+		<url-pattern>/mirov2/greetingService</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>SampleUploadServlet</servlet-name>
+		<servlet-class>miro.server.SampleUploadServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>SampleUploadServlet</servlet-name>
+		<url-pattern>/mirov2/SampleUploadServlet</url-pattern>
+	</servlet-mapping>
+
+	
+	<servlet>
+	  <servlet-name>export</servlet-name>
+	  <servlet-class>miro.server.ExportServlet</servlet-class>
+	</servlet>
+ 
+	<servlet-mapping>
+	  <servlet-name>export</servlet-name>
+	  <url-pattern>/mirov2/export</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>MiroV2.html</welcome-file>
+	</welcome-file-list>
+	
+	 <dependency>
+    <groupId>net.sourceforge.jexcelapi</groupId>
+    <artifactId>jxl</artifactId>
+    <version>2.6.10</version>
+	</dependency>
+	<repository>
+	     <id>mvnrepository.com</id>
+	     <name>MvnRepository</name>
+	     <url>http://www.mvnrepository.com</url>
+	</repository>
+</web-app>
