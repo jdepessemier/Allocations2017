@@ -9,10 +9,9 @@
 	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/gwt-test-utils-0.5-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/gwt-test-utils-0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/gwtupload-0.5.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/jdo2-api-2.3-eb.jar"/>
 	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/log4j-1.2.16.jar"/>
 	<classpathentry exported="true" kind="lib" path="war/WEB-INF/lib/objectify-2.0.2.jar"/>
-	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER/App Engine (7)"/>
+	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER/App Engine (8)"/>
 	<classpathentry kind="lib" path="Z:/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.1_2.1.1.v201012170127/gwt-sdk-plugin.jar"/>
 	<classpathentry kind="lib" path="Z:/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.1_2.1.1.v201012170127/gwt-2.1.1/gwt-dev.jar"/>
 	<classpathentry kind="lib" path="Z:/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.1_2.1.1.v201012170127/gwt-2.1.1/gwt-soyc-vis.jar"/>
@@ -20,5 +19,6 @@
 	<classpathentry kind="lib" path="Z:/eclipse/plugins/com.google.gwt.eclipse.sdkbundle.2.1.1_2.1.1.v201012170127/gwt-2.1.1/gwt-user.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jxl.jar"/>
+	<classpathentry kind="lib" path="Z:/Dev/External Libraries/jdo2-api-2.3-eb.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
