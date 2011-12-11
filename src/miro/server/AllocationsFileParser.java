@@ -75,6 +75,16 @@ public class AllocationsFileParser {
         
         if ((!personFullName.equalsIgnoreCase("Auquiere Eric")) &&
         	(!personFullName.equalsIgnoreCase("Engelen Albert")) &&
+        	(!personFullName.equalsIgnoreCase("Chia-Chen Lian")) &&
+        	(!personFullName.equalsIgnoreCase("De Buck Yessica")) &&
+   			(!personFullName.equalsIgnoreCase("Deurbroeck Véronique")) &&
+   			(!personFullName.equalsIgnoreCase("Michel Bernard")) &&
+   			(!personFullName.equalsIgnoreCase("Mozafari Ghasem")) &&
+   			(!personFullName.equalsIgnoreCase("Rasoazananiary Odette")) &&
+   			(!personFullName.equalsIgnoreCase("Sakindi Pontien")) &&
+   			(!personFullName.equalsIgnoreCase("Van den Broucke Koen")) &&
+   			(!personFullName.equalsIgnoreCase("Van De Perre Jochen")) && 
+   			(!personFullName.equalsIgnoreCase("Wuidar Freddy")) &&
         	(!personFullName.equalsIgnoreCase("De Pessemier Johan"))) {        	
         	putAllocationData(personFullName,missionName,activityName,index, value);
         } 

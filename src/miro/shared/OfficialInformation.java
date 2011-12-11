@@ -4,7 +4,7 @@ package miro.shared;
  * This class represents the static information of the array in the application
  */
 public class OfficialInformation {
-	public static final int CURRENT_YEAR = 2011;
+	public static final int CURRENT_YEAR = 2012;
 
 	public static final Record[] numberDaysByMonthArray = {
 			new Record(21, new Time(1, CURRENT_YEAR)),
