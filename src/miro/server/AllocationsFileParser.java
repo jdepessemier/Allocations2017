@@ -85,7 +85,7 @@ public class AllocationsFileParser {
    			(!personFullName.equalsIgnoreCase("Van den Broucke Koen")) &&
    			(!personFullName.equalsIgnoreCase("Van De Perre Jochen")) && 
    			(!personFullName.equalsIgnoreCase("Wuidar Freddy")) &&
-        	(!personFullName.equalsIgnoreCase("De Pessemier Johan"))) {        	
+        	(!personFullName.equalsIgnoreCase("De Pessemier Johan"))) { 
         	putAllocationData(personFullName,missionName,activityName,index, value);
         } 
     }
@@ -137,7 +137,7 @@ public class AllocationsFileParser {
   
         obj.put(allocation);
     }
-    
+        
     public double round(double what, int howmuch) {
     	return (double)( (int)(what * Math.pow(10,howmuch) + .5) ) / Math.pow(10,howmuch);
     }
