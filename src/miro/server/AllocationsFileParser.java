@@ -72,8 +72,8 @@ public class AllocationsFileParser {
         	activityName = "Activités Hors Projets";
         }
  
-        
         if ((!personFullName.equalsIgnoreCase("Auquiere Eric")) &&
+        	(!personFullName.equalsIgnoreCase("Hennuy Etienne")) &&	
         	(!personFullName.equalsIgnoreCase("Engelen Albert")) &&
         	(!personFullName.equalsIgnoreCase("Chia-Chen Lian")) &&
         	(!personFullName.equalsIgnoreCase("De Buck Yessica")) &&
