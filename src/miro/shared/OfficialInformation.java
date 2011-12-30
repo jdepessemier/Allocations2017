@@ -31,6 +31,6 @@ public class OfficialInformation {
 			new Record(1, new Time(8, CURRENT_YEAR)),
 			new Record(0, new Time(9, CURRENT_YEAR)),
 			new Record(0, new Time(10, CURRENT_YEAR)),
-			new Record(1, new Time(11, CURRENT_YEAR)),
-			new Record(1, new Time(12, CURRENT_YEAR)) };
+			new Record(3, new Time(11, CURRENT_YEAR)),
+			new Record(2, new Time(12, CURRENT_YEAR)) };
 }
