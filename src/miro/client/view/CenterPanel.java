@@ -136,19 +136,19 @@ public class CenterPanel extends Composite implements EventListener {
 	private void disableColumnsOfPreviousMonth() {
 		
 		for (int i = 0; i < titlesRowArray.length; i++) {
-			for (int j = 2; j < currentMonth + 1; j++) {
+			for (int j = 2; j < currentMonth; j++) {
 				((TextBox) (titlesRowArray[i].getElementAt(j))).setReadOnly(true);
 			}
 		}
 
 		for (int i = 0; i < projectRowList.size(); i++) {
-			for (int j = 2; j < currentMonth + 1; j++) {
+			for (int j = 2; j < currentMonth; j++) {
 				((TextBox) (projectRowList.get(i).getElementAt(j))).setReadOnly(true);
 			}
 		}
 
 		for (int i = 0; i < calcRowArray.length; i++) {
-			for (int j = 2; j < currentMonth + 1; j++) {
+			for (int j = 2; j < currentMonth; j++) {
 				((TextBox) (calcRowArray[i].getElementAt(j))).setReadOnly(true);
 			}
 		}
