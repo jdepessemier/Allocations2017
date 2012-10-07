@@ -14,6 +14,5 @@
 		<g:center>
 			<miroView:CenterPanel />
 		</g:center>
-
 	</g:DockLayoutPanel>
 </ui:UiBinder>
