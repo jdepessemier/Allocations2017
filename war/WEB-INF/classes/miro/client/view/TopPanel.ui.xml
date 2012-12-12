@@ -1,0 +1,13 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+	
+			<g:AbsolutePanel ui:field="absolutePanel">
+				<g:Label text="Choix de la personne :" ui:field="labelSelectPersonOrProject" />
+				<g:ListBox ui:field="personOrProjectListBox" />
+				<g:Label text="Importer un fichier :" ui:field="labelImportFile" />
+				<g:FormPanel ui:field="formPanel" />
+				<g:Image url="Excel-icon.png" ui:field="excelImage" />
+				<g:Image url="Office-excel-csv-icon.png" ui:field="csvImage" />		
+			</g:AbsolutePanel>	
+
+</ui:UiBinder>

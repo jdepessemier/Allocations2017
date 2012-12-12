@@ -1,0 +1,2 @@
+serviceClass: miro.shared.GreetingService
+path: CFD2BF54DAF6FDD33F71BD8B2EE96654.gwt.rpc

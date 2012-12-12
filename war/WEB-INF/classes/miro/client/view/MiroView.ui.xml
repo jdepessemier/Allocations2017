@@ -1,0 +1,21 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:miroView='urn:import:miro.client.view'>
+
+	<g:DockLayoutPanel unit='EM'>
+
+		<g:north size="9">
+			<g:Image url="banniereCIRB.jpg" />
+		</g:north>
+
+		<g:center>
+			<miroView:AuthentificationBox />
+		</g:center>
+
+		<g:south size="9">
+			<g:Image
+				url="http://code.google.com/appengine/images/appengine-noborder-120x30.gif" />
+		</g:south>
+
+	</g:DockLayoutPanel>
+</ui:UiBinder> 

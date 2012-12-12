@@ -1,0 +1,18 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+	<ui:style>
+		.flexTable {
+			margin-left: 10px;
+			border: 1px solid black;
+			height: 100px;
+			width: 100px;
+		}
+	</ui:style>
+
+	<g:ScrollPanel>
+		<g:FlexTable ui:field="personArray" styleName="{style.flexTable}"
+			cellSpacing="0" cellPadding="0" />
+	</g:ScrollPanel>
+
+</ui:UiBinder>
