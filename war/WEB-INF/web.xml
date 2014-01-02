@@ -8,7 +8,6 @@
 		<servlet-name>greetServlet</servlet-name>
 		<servlet-class>miro.server.GreetingServiceImpl</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>greetServlet</servlet-name>
 		<url-pattern>/mirov2/greetingService</url-pattern>
@@ -18,7 +17,6 @@
 		<servlet-name>SampleUploadServlet</servlet-name>
 		<servlet-class>miro.server.SampleUploadServlet</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>SampleUploadServlet</servlet-name>
 		<url-pattern>/mirov2/SampleUploadServlet</url-pattern>
@@ -29,7 +27,6 @@
 	  <servlet-name>export</servlet-name>
 	  <servlet-class>miro.server.ExportServlet</servlet-class>
 	</servlet>
- 
 	<servlet-mapping>
 	  <servlet-name>export</servlet-name>
 	  <url-pattern>/mirov2/export</url-pattern>
