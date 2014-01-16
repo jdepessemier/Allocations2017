@@ -73,10 +73,9 @@ public class AllocationsFileParser {
         }
  
         if ((!personFullName.equalsIgnoreCase("Auquiere Eric")) &&
-        	(!personFullName.equalsIgnoreCase("Hennuy Etienne")) &&	
-        	(!personFullName.equalsIgnoreCase("Engelen Albert")) &&
-        	(!personFullName.equalsIgnoreCase("Chia-Chen Lian")) &&
-        	(!personFullName.equalsIgnoreCase("De Buck Yessica")) &&
+        	(!personFullName.equalsIgnoreCase("Castremanne Cédric")) &&	
+        	(!personFullName.equalsIgnoreCase("Latiers Mathieu")) &&
+        	(!personFullName.equalsIgnoreCase("Maquet Michèle")) &&
    			(!personFullName.equalsIgnoreCase("Deurbroeck Véronique")) &&
    			(!personFullName.equalsIgnoreCase("Michel Bernard")) &&
    			(!personFullName.equalsIgnoreCase("Mozafari Ghasem")) &&
@@ -85,15 +84,10 @@ public class AllocationsFileParser {
    			(!personFullName.equalsIgnoreCase("Van den Broucke Koen")) &&
    			(!personFullName.equalsIgnoreCase("Van De Perre Jochen")) && 
    			(!personFullName.equalsIgnoreCase("Wuidar Freddy")) &&
-   			(!personFullName.equalsIgnoreCase("Guilbert Murielle")) &&
    			(!personFullName.equalsIgnoreCase("Reynders Ronald")) &&
-   			(!personFullName.equalsIgnoreCase("Radermecker Pierre")) &&
    			(!personFullName.equalsIgnoreCase("Smeyers Frédéric")) &&
-   			(!personFullName.equalsIgnoreCase("Reynders Ronald")) &&
-   			(!personFullName.equalsIgnoreCase("Verschaeren Koen")) &&
-   			(!personFullName.equalsIgnoreCase("Vercaempst Adrien")) &&
-   			(!personFullName.equalsIgnoreCase("Van Den Broeck Tom")) &&
-        	(!personFullName.equalsIgnoreCase("De Pessemier Johan"))) { 
+        	(!personFullName.equalsIgnoreCase("De Pessemier Johan"))) {      	
+        	
         	putAllocationData(personFullName,missionName,activityName,index, value);
         } 
     }
