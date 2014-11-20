@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import miro.shared.Allocation;
+import miro.shared.StringUtil;
 import miro.shared.Time;
 
 import org.apache.commons.fileupload.FileItemStream;
@@ -86,7 +87,18 @@ public class AllocationsFileParser {
    			(!personFullName.equalsIgnoreCase("Wuidar Freddy")) &&
    			(!personFullName.equalsIgnoreCase("Reynders Ronald")) &&
    			(!personFullName.equalsIgnoreCase("Smeyers Frédéric")) &&
+   			(!personFullName.equalsIgnoreCase("Taskov Paul")) &&
+   			(!personFullName.equalsIgnoreCase("Pierre Dominique")) &&
         	(!personFullName.equalsIgnoreCase("De Pessemier Johan"))) {      	
+        	
+        	personFullName = personFullName.toUpperCase();
+        	personFullName = StringUtil.trimLeft(personFullName);
+        	personFullName = StringUtil.trimRight(personFullName);
+        	
+        	missionName = missionName.toUpperCase();
+        	missionName = StringUtil.trimLeft(missionName);
+        	missionName = StringUtil.trimRight(missionName);
+        	
         	
         	putAllocationData(personFullName,missionName,activityName,index, value);
         } 
