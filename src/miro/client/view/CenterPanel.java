@@ -1,6 +1,7 @@
 package miro.client.view;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import miro.client.db.MiroAccessDB;
@@ -41,19 +42,12 @@ public class CenterPanel extends Composite implements EventListener {
 	}
 
 	private static CenterPanelUiBinder ourUiBinder = GWT.create(CenterPanelUiBinder.class);
-
 	private MonthRow monthRow = new MonthRow(OfficialInformation.CURRENT_YEAR);
 	private CalcRow calcRowForProjectView = new CalcRow("Total prestations",false);
-
-	private TitleRow[] titlesRowArray = new TitleRow[5];
-	private CalcRow[] calcRowArray = new CalcRow[8];
-
+	private TitleRow[] titlesRowArray = new TitleRow[4];
+	private CalcRow[] calcRowArray = new CalcRow[2];
 	private List<ProjectRow> projectRowList = new ArrayList<ProjectRow>();
-
-	private final int pourcentLimitKPI = 75;
-
 	private static List<EventListener> eventListenerList = new ArrayList<EventListener>();
-
 	private int startIndex;
 	private int currentMonth;
 
@@ -78,9 +72,7 @@ public class CenterPanel extends Composite implements EventListener {
 			}
 		};
 		MiroAccessDB.getMonthOfDate(callback);
-
-		TopPanel.addEventListener(this);
-		
+		TopPanel.addEventListener(this);		
 	}
 
 	public static void addEventListener(EventListener eventListener) {
@@ -90,6 +82,7 @@ public class CenterPanel extends Composite implements EventListener {
 	public void refreshCenterPanel() {
 		
 		if (PartagedDataBetweenPanel.hasChangedView) {
+			
 			PartagedDataBetweenPanel.hasChangedView = false;
 			initStyleNameOfMonthRow();
 			
@@ -102,8 +95,6 @@ public class CenterPanel extends Composite implements EventListener {
 				refreshTitleRowList();
 				refreshProjectRowList();
 				refreshCalcRowList();
-				refreshStyleOfKPIRow();
-				refreshStyleOfTotalPourcentRow();
 				refreshStyleOfSumColumn();
 				break;
 			case PROJECT_VIEW:
@@ -119,8 +110,6 @@ public class CenterPanel extends Composite implements EventListener {
 				refreshTitleRowList();
 				refreshProjectRowList();
 				refreshCalcRowList();
-				refreshStyleOfKPIRow();
-				refreshStyleOfTotalPourcentRow();
 				refreshStyleOfSumColumn();
 				break;
 			case PROJECT_VIEW:
@@ -132,29 +121,42 @@ public class CenterPanel extends Composite implements EventListener {
 		}
 		refreshArray();
 	}
-
-	private void disableColumnsOfPreviousMonth() {
+	
+	private void initStyleNameOfMonthRow() {
 		
-		for (int i = 0; i < titlesRowArray.length; i++) {
-			for (int j = 2; j < currentMonth; j++) {
-				((TextBox) (titlesRowArray[i].getElementAt(j))).setReadOnly(true);
-			}
-		}
+		((TextBox) monthRow.getElementAt(0)).setStyleName("titleOfFirstColumn");
 
-		for (int i = 0; i < projectRowList.size(); i++) {
-			for (int j = 2; j < currentMonth; j++) {
-				((TextBox) (projectRowList.get(i).getElementAt(j))).setReadOnly(true);
-			}
+		for (int i = 1; i < monthRow.length(); i++) {
+			((TextBox) monthRow.getElementAt(i)).removeStyleName("titleOfFirstRow");
+			((TextBox) monthRow.getElementAt(i)).addStyleName("titleOfFirstRow");
 		}
-
-		for (int i = 0; i < calcRowArray.length; i++) {
-			for (int j = 2; j < currentMonth; j++) {
-				((TextBox) (calcRowArray[i].getElementAt(j))).setReadOnly(true);
-			}
-		}
+	
+	}	
+	
+	private void initTitleRowList() {
 		
+		Record[] recordOfNumberDaysByMonth = OfficialInformation.numberDaysByMonthArray;
+
+		titlesRowArray[0] = new TitleRow("Nombre Total de Jours", false);
+		titlesRowArray[1] = new TitleRow("Conges et Absences", true);
+		titlesRowArray[2] = new TitleRow("Formations", true);
+		titlesRowArray[3] = new TitleRow("Activites Hors-Projets", true);
+
+		for (int i = 2; i < titlesRowArray[0].length(); i++) {
+			double valueOfNumberDaysByMonthArray = round(recordOfNumberDaysByMonth[i - 2].getNumber(),2);
+
+			titlesRowArray[0].setElementAt(i, valueOfNumberDaysByMonthArray);
+		}
+
+		titlesRowArray[0].setElementAt(1, titlesRowArray[0].sumRow());
+		
+		((TextBox) titlesRowArray[0].getElementAt(0)).setStyleName("titleOfTotalNumberDays");
+		
+		for (int i = 1; i < titlesRowArray.length; i++) {
+			((TextBox) titlesRowArray[i].getElementAt(0)).setStyleName("titleOfFirstColumn");
+		}
 	}
-
+	
 	private void initTitleRowListeners() {
 
 		for (int i = 0; i < titlesRowArray.length; i++) {
@@ -164,108 +166,59 @@ public class CenterPanel extends Composite implements EventListener {
 				textboxOfTitleList.addChangeHandler(new MyTitleListener(i + 1,j, valueOfTextbox));
 			}
 		}
-	
 	}
 	
-	private void disableAllTitleRow() {
-
-		for (int i = 2; i < titlesRowArray.length; i++) {
-			for (int j = 1; j < titlesRowArray[i].length(); j++) {
-				((TextBox) titlesRowArray[i].getElementAt(j)).setReadOnly(true);
-			}
-		}
-	
-	}
-
-	private void enableAllTitleRow() {
-
-		for (int i = 2; i < titlesRowArray.length; i++) {
-			for (int j = 2; j < titlesRowArray[i].length(); j++) {
-				((TextBox) titlesRowArray[i].getElementAt(j)).setReadOnly(false);
-			}
-		}
-	
-	}
-
-	private void refreshCalcRowForProjectView() {
-	
-		double sumOfRow = round(0,2);
-
-		((TextBox) calcRowForProjectView.getElementAt(0)).setStyleName("titleOfFirstColumn");
-
-		for (int i = 2; i < 14; i++) {
-			double sum = round(0,2);
-			for (int j = 0; j < projectRowList.size(); j++) {
-				TextBox txtBoxOfProjectRowList = (TextBox) (projectRowList.get(j).getElementAt(i));
-				String txtOfTextBox = txtBoxOfProjectRowList.getText();
-				double valueOfCell = round(Double.valueOf(txtOfTextBox),2);
-				sum += valueOfCell;
-			}
-			sumOfRow += sum;
-			calcRowForProjectView.setElementAt(i, sum);
-		}
-		calcRowForProjectView.setElementAt(1, sumOfRow);
-	
-	}
-
-	private void refreshStyleOfTotalPourcentRow() {
-
-		for (int i = 1; i < calcRowArray[6].length(); i++) {
-
-			TextBox textBoxOfACell = (TextBox) (calcRowArray[6].getElementAt(i));
-			String txtNumberOfTextBox = textBoxOfACell.getText();
-			txtNumberOfTextBox = txtNumberOfTextBox.substring(0,txtNumberOfTextBox.length() - 1);
-			double valueOfTextBox = round(Double.valueOf(txtNumberOfTextBox),2);
-			textBoxOfACell.removeStyleName("green");
-			textBoxOfACell.removeStyleName("blue");
-
-			if (valueOfTextBox > 100) {
-				textBoxOfACell.addStyleName("blue");
-			} else {
-				textBoxOfACell.addStyleName("green");
-			}
-		}
-	
-	}
-
-	private void refreshStyleOfKPIRow() {
-
-		for (int i = 1; i < calcRowArray[7].length(); i++) {
-			TextBox textbox = (TextBox) calcRowArray[7].getElementAt(i);
-			String valueOfTextBox = textbox.getText();
-			valueOfTextBox = valueOfTextBox.substring(0, valueOfTextBox.indexOf("%"));
-			double value = round(Double.valueOf(valueOfTextBox),2);
-			textbox.removeStyleName("blue");
-			textbox.removeStyleName("green");
-
-			if (value > pourcentLimitKPI) {
-				textbox.addStyleName("green");
-			} else {
-				textbox.addStyleName("blue");
-			}
-		}
-	
-	}
-
-	private void refreshStyleOfSumColumn() {
-
-		((TextBox) monthRow.getElementAt(1)).addStyleName("columnOfRowsSum");
-
-		for (int i = 0; i < titlesRowArray.length; i++) {
-			((TextBox) titlesRowArray[i].getElementAt(1)).addStyleName("columnOfRowsSum");
-		}
+	private void initCalcRowList() {
+		
+		calcRowArray[0] = new CalcRow("Jours disponibles projets", false);
+		calcRowArray[1] = new CalcRow("Total Projets", false);
 
 		for (int i = 0; i < calcRowArray.length; i++) {
-			((TextBox) calcRowArray[i].getElementAt(1)).addStyleName("columnOfRowsSum");
+				((TextBox) calcRowArray[i].getElementAt(0)).setStyleName("titleOfFirstColumnCalculated ");
+				((TextBox) calcRowArray[i].getElementAt(1)).setStyleName("titleOfCalculated ");
+				((TextBox) calcRowArray[i].getElementAt(2)).setStyleName("titleOfCalculated ");
+				((TextBox) calcRowArray[i].getElementAt(3)).setStyleName("titleOfCalculated ");
+				((TextBox) calcRowArray[i].getElementAt(4)).setStyleName("titleOfCalculated ");
+				((TextBox) calcRowArray[i].getElementAt(5)).setStyleName("titleOfCalculated ");
+				((TextBox) calcRowArray[i].getElementAt(6)).setStyleName("titleOfCalculated ");
+				((TextBox) calcRowArray[i].getElementAt(7)).setStyleName("titleOfCalculated ");
+				((TextBox) calcRowArray[i].getElementAt(8)).setStyleName("titleOfCalculated ");
+				((TextBox) calcRowArray[i].getElementAt(9)).setStyleName("titleOfCalculated ");
+				((TextBox) calcRowArray[i].getElementAt(10)).setStyleName("titleOfCalculated ");
+				((TextBox) calcRowArray[i].getElementAt(11)).setStyleName("titleOfCalculated ");
+				((TextBox) calcRowArray[i].getElementAt(12)).setStyleName("titleOfCalculated ");
+				((TextBox) calcRowArray[i].getElementAt(13)).setStyleName("titleOfCalculated ");
 		}
-
-		for (int i = 0; i < projectRowList.size(); i++) {
-			((TextBox) projectRowList.get(i).getElementAt(1)).addStyleName("columnOfRowsSum");
-		}
-
-		((TextBox) calcRowForProjectView.getElementAt(1)).addStyleName("columnOfRowsSum");
 	}
+	
+	private void refreshTitleRowList() {
 
+		for (int i = 1; i < titlesRowArray.length; i++) {
+			for (int j = 2; j < titlesRowArray[i].length(); j++) {
+				Record record = new Record();
+				Time time = new Time(j - 1, OfficialInformation.CURRENT_YEAR);
+
+				if (PartagedDataBetweenPanel.currentPerson != null) {
+					switch (i) {
+					case 1:
+						record = PartagedDataBetweenPanel.currentPerson.getHoliday(time);
+						break;
+					case 2:
+						record = PartagedDataBetweenPanel.currentPerson.getTraining(time);
+						break;
+					case 3:
+						record = PartagedDataBetweenPanel.currentPerson.getOther(time);
+						break;
+					}
+				}
+				titlesRowArray[i].setElementAt(j, record.getNumber());
+			}
+			double sumOfTheTitleRow = round(titlesRowArray[i].sumRow(),2);
+			titlesRowArray[i].setElementAt(1, sumOfTheTitleRow);
+		}
+	
+	}
+	
 	private void refreshProjectRowList() {
 		
 		List<Assignment> assignmentList;
@@ -299,7 +252,7 @@ public class CenterPanel extends Composite implements EventListener {
 			}
 			ProjectRow projectRow = new ProjectRow(personOrProjectName);
 
-			((TextBox) projectRow.getElementAt(0)).setStyleName("titleOfFirstColumn");
+			((TextBox) projectRow.getElementAt(0)).setStyleName("titleOfFirstColumnProject");
 			((TextBox) projectRow.getElementAt(0)).addStyleName("textbox-nameOfProjectOrPerson");
 			((TextBox) projectRow.getElementAt(0)).addClickHandler(new switchingViewListener(personOrProjectName));
 
@@ -313,247 +266,16 @@ public class CenterPanel extends Composite implements EventListener {
 			}
 			double sumOfTheProjectRow = round(projectRow.sumRow(),2);
 			projectRow.setElementAt(1, sumOfTheProjectRow);
+						
 			projectRowList.add(projectRow);
+			
+			Collections.sort(projectRowList, new ProjectRow.OrderByTitle());
 		}
 	
 	}
-
-	private void initStyleNameOfMonthRow() {
-		
-		((TextBox) monthRow.getElementAt(0)).setStyleName("titleOfFirstColumn");
-
-		for (int i = 1; i < monthRow.length(); i++) {
-			((TextBox) monthRow.getElementAt(i)).removeStyleName("titleOfFirstRow");
-			((TextBox) monthRow.getElementAt(i)).addStyleName("titleOfFirstRow");
-		}
 	
-	}
-
-	private void initTitleRowList() {
-		
-		Record[] recordOfNumberDaysByMonth = OfficialInformation.numberDaysByMonthArray;
-		Record[] recordOfNumberOfficialHolidaysArray = OfficialInformation.numberOfficialHolidaysArray;
-
-		titlesRowArray[0] = new TitleRow("Nombre Total de Jours", false);
-		titlesRowArray[1] = new TitleRow("Conges legaux & CIRB", false);
-		titlesRowArray[2] = new TitleRow("Conges et Absences", true);
-		titlesRowArray[3] = new TitleRow("Formations", true);
-		titlesRowArray[4] = new TitleRow("Activites Hors-Projets", true);
-
-		for (int i = 2; i < titlesRowArray[0].length(); i++) {
-			double valueOfNumberDaysByMonthArray = round(recordOfNumberDaysByMonth[i - 2].getNumber(),2);
-			double valueOfNumberOfficialHolidaysArray = round(recordOfNumberOfficialHolidaysArray[i - 2].getNumber(),2);
-
-			titlesRowArray[0].setElementAt(i, valueOfNumberDaysByMonthArray);
-			titlesRowArray[1].setElementAt(i, valueOfNumberOfficialHolidaysArray);
-		}
-
-		titlesRowArray[0].setElementAt(1, titlesRowArray[0].sumRow());
-		titlesRowArray[1].setElementAt(1, titlesRowArray[1].sumRow());
-
-		for (int i = 0; i < titlesRowArray.length; i++) {
-			((TextBox) titlesRowArray[i].getElementAt(0)).setStyleName("titleOfFirstColumn");
-		}
-	
-	}
-
-	private void initCalcRowList() {
-		
-		calcRowArray[0] = new CalcRow("Jours disponibles projets", false);
-		calcRowArray[1] = new CalcRow("Total Projets", false);
-		calcRowArray[2] = new CalcRow("% Conges & Absences", true);
-		calcRowArray[3] = new CalcRow("% Formations", true);
-		calcRowArray[4] = new CalcRow("% Activites hors-projets", true);
-		calcRowArray[5] = new CalcRow("% Projets", true);
-		calcRowArray[6] = new CalcRow("Total en %", true);
-		calcRowArray[7] = new CalcRow("KPI - % Affectation Projets", true);
-
-		for (int i = 0; i < calcRowArray.length; i++) {
-			((TextBox) calcRowArray[i].getElementAt(0)).setStyleName("titleOfFirstColumn");
-		}
-	}
-
-	private void refreshTitleRowList() {
-
-		for (int i = 2; i < titlesRowArray.length; i++) {
-			for (int j = 2; j < titlesRowArray[i].length(); j++) {
-				Record record = new Record();
-				Time time = new Time(j - 1, OfficialInformation.CURRENT_YEAR);
-
-				if (PartagedDataBetweenPanel.currentPerson != null) {
-					switch (i) {
-					case 2:
-						record = PartagedDataBetweenPanel.currentPerson.getHoliday(time);
-						break;
-					case 3:
-						record = PartagedDataBetweenPanel.currentPerson.getTraining(time);
-						break;
-					case 4:
-						record = PartagedDataBetweenPanel.currentPerson.getOther(time);
-						break;
-					}
-				}
-				titlesRowArray[i].setElementAt(j, record.getNumber());
-			}
-			double sumOfTheTitleRow = round(titlesRowArray[i].sumRow(),2);
-			titlesRowArray[i].setElementAt(1, sumOfTheTitleRow);
-		}
-	
-	}
-
-	private void manageProjectDaysAvailabilityRow(int i, int j) {
-	
-		String numberDaysForMonthTxt = ((TextBox) (titlesRowArray[0].getElementAt(j))).getText();
-		String numberOfficialHolidaysForMonthTxt = ((TextBox) (titlesRowArray[1].getElementAt(j))).getText();
-		String numberHolidaysForMonthTxt = ((TextBox) (titlesRowArray[2].getElementAt(j))).getText();
-		String numberTrainingForMonthTxt = ((TextBox) (titlesRowArray[3].getElementAt(j))).getText();
-		String numberOutProjectActivitiesForMonthTxt = ((TextBox) (titlesRowArray[4].getElementAt(j))).getText();
-
-		double numberDaysForMonth = round(Double.valueOf(numberDaysForMonthTxt),2);
-		double numberOfficialHolidaysForMonth = round(Double.valueOf(numberOfficialHolidaysForMonthTxt),2);
-		double numberHolidaysForMonth = round(Double.valueOf(numberHolidaysForMonthTxt),2);
-		double numberTrainingForMonth = round(Double.valueOf(numberTrainingForMonthTxt),2);
-		double numberOutProjectActivitiesForMonth = round(Double.valueOf(numberOutProjectActivitiesForMonthTxt),2);
-
-		double numberAvailabilityProjectDays = round(numberDaysForMonth - 
-											   numberHolidaysForMonth - 
-											   numberTrainingForMonth - 
-											   numberOutProjectActivitiesForMonth,2);
-
-		calcRowArray[i].setElementAt(j, numberAvailabilityProjectDays);
-	
-	}
-
-	private void manageProjectTotalRow(int i, int j) {
-	
-		double sum = round(0,2);
-
-		for (int index = 0; index < projectRowList.size(); index++) {
-			String prestationNumberForTheProject = ((TextBox) projectRowList.get(index).getElementAt(j)).getText();
-			double valueOfPrestation = round(Double.valueOf(prestationNumberForTheProject),2);
-			sum += valueOfPrestation;
-		}
-		calcRowArray[i].setElementAt(j, sum);
-	
-	}
-
-	private void manageHolidaysPourcentRow(int i, int j) {
-	
-		String numberDaysForMonthTxt = ((TextBox) (titlesRowArray[0].getElementAt(j))).getText();
-		String numberOfficialHolidaysForMonthTxt = ((TextBox) (titlesRowArray[1].getElementAt(j))).getText();
-		String numberHolidaysForMonthTxt = ((TextBox) (titlesRowArray[2].getElementAt(j))).getText();
-
-		double numberDaysForMonth = round(Double.valueOf(numberDaysForMonthTxt),2);
-		double numberOfficialHolidaysForMonth = round(Double.valueOf(numberOfficialHolidaysForMonthTxt),2);
-		double numberHolidaysForMonth = round(Double.valueOf(numberHolidaysForMonthTxt),2);
-		double holidayPourcent = round(0,2);
-
-		if (numberDaysForMonth > 0) {
-			holidayPourcent = round((double) (((numberHolidaysForMonth) / numberDaysForMonth) * 100),2);
-		}
-		calcRowArray[i].setElementAt(j, holidayPourcent);
-	
-	}
-
-	private void manageTrainingPourcentRow(int i, int j) {
-	
-		String numberDaysForMonthTxt = ((TextBox) (titlesRowArray[0].getElementAt(j))).getText();
-		String numberTrainingForMonthTxt = ((TextBox) (titlesRowArray[3].getElementAt(j))).getText();
-
-		double numberDaysForMonth = round(Double.valueOf(numberDaysForMonthTxt),2);
-		double numberTrainingForMonth = round(Double.valueOf(numberTrainingForMonthTxt),2);
-		double trainingPourcent = 0;
-
-		if (numberDaysForMonth > 0) {
-			trainingPourcent = round((double) ((numberTrainingForMonth / numberDaysForMonth) * 100),2);
-		}
-		calcRowArray[i].setElementAt(j, trainingPourcent);
-	
-	}
-
-	private void manageOutProjectActivitiesPourcentRow(int i, int j) {
-	
-		String numberDaysForMonthTxt = ((TextBox) (titlesRowArray[0].getElementAt(j))).getText();
-		String numberOutProjectActivitiesForMonthTxt = ((TextBox) (titlesRowArray[4].getElementAt(j))).getText();
-
-		double numberDaysForMonth = round(Double.valueOf(numberDaysForMonthTxt),2);
-		double numberOutProjectActivitiesForMonth = round(Double.valueOf(numberOutProjectActivitiesForMonthTxt),2);
-		double outProjectActivitiesPourcent = round(0,2);
-
-		if (numberDaysForMonth > 0) {
-			outProjectActivitiesPourcent = round((double) ((numberOutProjectActivitiesForMonth / numberDaysForMonth) * 100),2);
-		}
-		calcRowArray[i].setElementAt(j, outProjectActivitiesPourcent);
-	
-	}
-
-	private void manageProjectPourcentRow(int i, int j) {
-	
-		String numberDaysForMonthTxt = ((TextBox) (titlesRowArray[0].getElementAt(j))).getText();
-		String sumProjectTxt = ((TextBox) (calcRowArray[1].getElementAt(j))).getText();
-
-		double numberDaysForMonth = round(Double.valueOf(numberDaysForMonthTxt),2);
-		double sumProject = round(Double.valueOf(sumProjectTxt),2);
-		double projectPourcent = round(0,2);
-
-		if (numberDaysForMonth > 0) {
-			projectPourcent = round((double) ((sumProject / numberDaysForMonth) * 100),2);
-		}
-		calcRowArray[i].setElementAt(j, projectPourcent);
-	
-	}
-
-	private void manageSumOfPourcentRow(int i, int j) {
-		
-		String holidayPourcent = ((TextBox) (calcRowArray[2].getElementAt(j))).getText();
-		holidayPourcent = holidayPourcent.substring(0,holidayPourcent.length() - 1);
-
-		String trainingPourcent = ((TextBox) (calcRowArray[3].getElementAt(j))).getText();
-		trainingPourcent = trainingPourcent.substring(0, trainingPourcent.length() - 1);
-
-		String outActivitiesProjectPourcent = ((TextBox) (calcRowArray[4].getElementAt(j))).getText();
-		outActivitiesProjectPourcent = outActivitiesProjectPourcent.substring(0, outActivitiesProjectPourcent.length() - 1);
-
-		String projectPourcent = ((TextBox) (calcRowArray[5].getElementAt(j))).getText();
-		projectPourcent = projectPourcent.substring(0,projectPourcent.length() - 1);
-
-		double pourcentForHolidays = round(Double.valueOf(holidayPourcent),2);
-		double pourcentForTraining = round(Double.valueOf(trainingPourcent),2);
-		double pourcentForOutActivitiesProject = round(Double.valueOf(outActivitiesProjectPourcent),2);
-		double pourcentForProject = round(Double.valueOf(projectPourcent),2);
-
-		double sumOfPourcent = round((pourcentForHolidays + 
-									  pourcentForTraining + 
-									  pourcentForOutActivitiesProject + 
-									  pourcentForProject),2);
-
-		calcRowArray[i].setElementAt(j, sumOfPourcent);
-	
-	}
-
-	private void manageKPIRow(int i, int j) {
-	
-		String sumOfProjectTxt = ((TextBox) (calcRowArray[1].getElementAt(j))).getText();
-		double sumOfProject = round(Double.valueOf(sumOfProjectTxt),2);
-		String numberTrainingForMonthTxt = ((TextBox) (titlesRowArray[3].getElementAt(j))).getText();
-		String numberOutProjectActivitiesForMonthTxt = ((TextBox) (titlesRowArray[4].getElementAt(j))).getText();
-		String numberProjectDaysAvailabilityTxt = ((TextBox) (calcRowArray[0].getElementAt(j))).getText();
-
-		double numberTrainingForMonth = round(Double.valueOf(numberTrainingForMonthTxt),2);
-		double numberOutProjectActivitiesForMonth = round(Double.valueOf(numberOutProjectActivitiesForMonthTxt),2);
-		double numberProjectDaysAvailability = round(Double.valueOf(numberProjectDaysAvailabilityTxt),2);
-
-		double PKIPourcent = round(0,2);
-
-		if ((numberTrainingForMonth + numberOutProjectActivitiesForMonth + numberProjectDaysAvailability) > 0) {
-			PKIPourcent = (double) ((sumOfProject / (numberTrainingForMonth + numberOutProjectActivitiesForMonth + numberProjectDaysAvailability)) * 100);
-		}
-		calcRowArray[i].setElementAt(j, PKIPourcent);
-	
-	}
-
 	private void refreshCalcRowList() {
-	
+		
 		for (int i = 0; i < calcRowArray.length; i++) {
 			for (int j = 2; j < calcRowArray[i].length(); j++) {
 				switch (i) {
@@ -563,24 +285,6 @@ public class CenterPanel extends Composite implements EventListener {
 				case 1:
 					manageProjectTotalRow(i, j);
 					break;
-				case 2:
-					manageHolidaysPourcentRow(i, j);
-					break;
-				case 3:
-					manageTrainingPourcentRow(i, j);
-					break;
-				case 4:
-					manageOutProjectActivitiesPourcentRow(i, j);
-					break;
-				case 5:
-					manageProjectPourcentRow(i, j);
-					break;
-				case 6:
-					manageSumOfPourcentRow(i, j);
-					break;
-				case 7:
-					manageKPIRow(i, j);
-					break;
 				}
 				double sumOfTheCalcRow = round(calcRowArray[i].sumRow(),2);
 				calcRowArray[i].setElementAt(1, sumOfTheCalcRow);
@@ -588,7 +292,52 @@ public class CenterPanel extends Composite implements EventListener {
 		}
 	
 	}
+	
+	private void refreshCalcRowForProjectView() {
+		
+		double sumOfRow = round(0,2);
 
+		((TextBox) calcRowForProjectView.getElementAt(0)).setStyleName("titleOfFirstColumn");
+
+		for (int i = 2; i < 14; i++) {
+			double sum = round(0,2);
+			for (int j = 0; j < projectRowList.size(); j++) {
+				TextBox txtBoxOfProjectRowList = (TextBox) (projectRowList.get(j).getElementAt(i));
+				String txtOfTextBox = txtBoxOfProjectRowList.getText();
+				double valueOfCell = round(Double.valueOf(txtOfTextBox),2);
+				sum += valueOfCell;
+			}
+			sumOfRow += sum;
+			calcRowForProjectView.setElementAt(i, sum);
+		}
+		calcRowForProjectView.setElementAt(1, sumOfRow);
+	
+	}
+
+	private void refreshStyleOfSumColumn() {
+
+		((TextBox) monthRow.getElementAt(0)).addStyleName("columnOfRowsSum0");
+		((TextBox) monthRow.getElementAt(1)).addStyleName("columnOfRowsSum0");
+
+		for (int i = 1; i < 14; i++) {
+		((TextBox) titlesRowArray[0].getElementAt(i)).addStyleName("columnOfRowsSum1");
+		}
+		
+		for (int i = 1; i < titlesRowArray.length; i++) {
+			((TextBox) titlesRowArray[i].getElementAt(1)).addStyleName("columnOfRowsSum2");
+		}
+
+		for (int i = 0; i < calcRowArray.length; i++) {
+			((TextBox) calcRowArray[i].getElementAt(1)).addStyleName("columnOfRowsSum3");
+		}
+
+		for (int i = 0; i < projectRowList.size(); i++) {
+			((TextBox) projectRowList.get(i).getElementAt(1)).addStyleName("columnOfRowsSum4");
+		}
+
+		((TextBox) calcRowForProjectView.getElementAt(1)).addStyleName("columnOfRowsSum2");
+	}
+	
 	private void refreshArray() {
 		
 		clearArray();
@@ -663,25 +412,102 @@ public class CenterPanel extends Composite implements EventListener {
 				}
 				break;
 			}
-
 			break;
 		case PROJECTROW:
 			personArray.insertRow(startIndex);
-
-			for (int i = startIndex; i < (startIndex + projectRowList
-					.size()); i++) {
-				personArray.insertRow(startIndex);
+			
+			Collections.sort(projectRowList, new ProjectRow.OrderByTitle());
+			
+//			for (int i = 0; i < (projectRowList.size()); i++) {
+//				Window.alert(projectRowList.get(i).getTitle());
+//			}
+						
+			for (int i = startIndex; i < (startIndex + projectRowList.size()); i++) {
+				personArray.insertRow(i);
 
 				ProjectRow projectRowFromList = projectRowList.get(i - startIndex);
 
 				for (int j = 0; j < projectRowFromList.length(); j++) {
-					TextBox elementFromProjectRow = (TextBox) projectRowFromList
-							.getElementAt(j);
-					personArray.setWidget(startIndex, j, elementFromProjectRow);
+					TextBox elementFromProjectRow = (TextBox) projectRowFromList.getElementAt(j);
+					personArray.setWidget(i, j, elementFromProjectRow);
 				}
 			}
 			break;
 		}
+	}
+
+	private void disableColumnsOfPreviousMonth() {
+		
+		for (int i = 1; i < titlesRowArray.length; i++) {
+			for (int j = 2; j < currentMonth; j++) {
+				((TextBox) (titlesRowArray[i].getElementAt(j))).setReadOnly(true);
+			}
+		}
+
+		for (int i = 0; i < projectRowList.size(); i++) {
+			for (int j = 2; j < currentMonth; j++) {
+				((TextBox) (projectRowList.get(i).getElementAt(j))).setReadOnly(true);
+			}
+		}
+
+		for (int i = 0; i < calcRowArray.length; i++) {
+			for (int j = 2; j < currentMonth; j++) {
+				((TextBox) (calcRowArray[i].getElementAt(j))).setReadOnly(true);
+			}
+		}
+		
+	}
+	
+	private void disableAllTitleRow() {
+
+		for (int i = 1; i < titlesRowArray.length; i++) {
+			for (int j = 1; j < titlesRowArray[i].length(); j++) {
+				((TextBox) titlesRowArray[i].getElementAt(j)).setReadOnly(true);
+			}
+		}
+	
+	}
+
+	private void enableAllTitleRow() {
+
+		for (int i = 1; i < titlesRowArray.length; i++) {
+			for (int j = 2; j < titlesRowArray[i].length(); j++) {
+				((TextBox) titlesRowArray[i].getElementAt(j)).setReadOnly(false);
+			}
+		}
+	
+	}
+
+	private void manageProjectDaysAvailabilityRow(int i, int j) {
+	
+		String numberDaysForMonthTxt = ((TextBox) (titlesRowArray[0].getElementAt(j))).getText();
+		String numberHolidaysForMonthTxt = ((TextBox) (titlesRowArray[1].getElementAt(j))).getText();
+		String numberTrainingForMonthTxt = ((TextBox) (titlesRowArray[2].getElementAt(j))).getText();
+		String numberOutProjectActivitiesForMonthTxt = ((TextBox) (titlesRowArray[3].getElementAt(j))).getText();
+
+		double numberDaysForMonth = round(Double.valueOf(numberDaysForMonthTxt),2);
+		double numberHolidaysForMonth = round(Double.valueOf(numberHolidaysForMonthTxt),2);
+		double numberTrainingForMonth = round(Double.valueOf(numberTrainingForMonthTxt),2);
+		double numberOutProjectActivitiesForMonth = round(Double.valueOf(numberOutProjectActivitiesForMonthTxt),2);
+
+		double numberAvailabilityProjectDays = round(numberDaysForMonth - 
+											   numberHolidaysForMonth - 
+											   numberTrainingForMonth - 
+											   numberOutProjectActivitiesForMonth,2);
+		calcRowArray[i].setElementAt(j, numberAvailabilityProjectDays);	
+	}
+
+	private void manageProjectTotalRow(int i, int j) {
+	
+		double sum = round(0,2);
+
+		for (int index = 0; index < projectRowList.size(); index++) {
+			String prestationNumberForTheProject = ((TextBox) projectRowList.get(index).getElementAt(j)).getText();
+			double valueOfPrestation = round(Double.valueOf(prestationNumberForTheProject),2);
+			sum += valueOfPrestation;
+		}
+		calcRowArray[i].setElementAt(j, sum);
+	
 	}
 
 	private void disableAllProjectRow() {
@@ -701,7 +527,7 @@ public class CenterPanel extends Composite implements EventListener {
 		
 	}
 
-	// All events listeners
+	// All events listeners  --------------------------------------------------------------------
 	
 	@Override
 	public void notifyChange(Widget widget) {
@@ -723,8 +549,7 @@ public class CenterPanel extends Composite implements EventListener {
 		int column;
 		double value = round(0,2);
 
-		public MyTitleListener(int row, int column, double oldValue) {
-			
+		public MyTitleListener(int row, int column, double oldValue) {			
 			this.row = row;
 			this.column = column;
 			value = round(oldValue,2);
@@ -735,7 +560,7 @@ public class CenterPanel extends Composite implements EventListener {
 			TextBox textbox = (TextBox) changeEvent.getSource();
 			double valueOfTextBox = round(Double.valueOf(textbox.getText()),2);
 
-			if (row > 0 && row < 6) {
+			if (row > 0 && row < 5) {
 				if (valueOfTextBox < 0) {
 					Window.alert("Valeur negative interdite !");
 					textbox.setText("" + value);
@@ -744,12 +569,9 @@ public class CenterPanel extends Composite implements EventListener {
 					manageTitleRow();
 					refreshTitleRowList();
 					refreshCalcRowList();
-					refreshStyleOfTotalPourcentRow();
-					refreshStyleOfKPIRow();
 					refreshStyleOfSumColumn();
 				}
-			}
-			
+			}	
 		}
 
 		private void manageTitleRow() {
@@ -758,85 +580,83 @@ public class CenterPanel extends Composite implements EventListener {
 			Time time = new Time(monthNumber, OfficialInformation.CURRENT_YEAR);
 			
 			switch (row) {
-			case 3:{
-				PartagedDataBetweenPanel.currentPerson.getHoliday(time).setNumber(value);
-				String activity = "Congés & Absences";
-				String mission = "TTR Générique";
-				
-				final AsyncCallback<Allocation> PUT_PERSON_ALLOCATION_CALLBACK = new AsyncCallback<Allocation>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert("Impossible de mettre à jour!");
-					}
-
-					@Override
-					public void onSuccess(Allocation result) {	
-					};
-				};		
-//				Window.alert(PartagedDataBetweenPanel.currentPerson.getName()+" "+monthNumber+" "+value);
-				MiroAccessDB.putPersonAllocation(PartagedDataBetweenPanel.currentPerson.getName(),
-												 mission,
-												 activity,
-												 monthNumber,
-												 value,
-												 PUT_PERSON_ALLOCATION_CALLBACK);
-				break;
-			}
-			case 4:{
-				PartagedDataBetweenPanel.currentPerson.getTraining(time).setNumber(value);
-				String activity = "Formations";
-				String mission = "TTR Générique";
-				
-				final AsyncCallback<Allocation> PUT_PERSON_ALLOCATION_CALLBACK = new AsyncCallback<Allocation>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert("Impossible de mettre à jour!");
-					}
-
-					@Override
-					public void onSuccess(Allocation result) {	
-					};
-				};		
-//				Window.alert(PartagedDataBetweenPanel.currentPerson.getName()+" "+monthNumber+" "+value);
-				MiroAccessDB.putPersonAllocation(PartagedDataBetweenPanel.currentPerson.getName(),
-												 mission,
-												 activity,
-												 monthNumber,
-												 value,
-												 PUT_PERSON_ALLOCATION_CALLBACK);
-				break;
-			}
-			case 5:{
-				PartagedDataBetweenPanel.currentPerson.getOther(time).setNumber(value);
-				String activity = "Activités Hors Projets";
-				String mission = "TTR Générique";
-				
-				final AsyncCallback<Allocation> PUT_PERSON_ALLOCATION_CALLBACK = new AsyncCallback<Allocation>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert("Impossible de mettre à jour!");
-					}
-
-					@Override
-					public void onSuccess(Allocation result) {	
-					};
-				};		
-//				Window.alert(PartagedDataBetweenPanel.currentPerson.getName()+" "+monthNumber+" "+value);
-				MiroAccessDB.putPersonAllocation(PartagedDataBetweenPanel.currentPerson.getName(),
-												 mission,
-												 activity,
-												 monthNumber,
-												 value,
-												 PUT_PERSON_ALLOCATION_CALLBACK);				
-				break;
-			}
-			}
-			
-		}
-		
+				case 2:{
+					PartagedDataBetweenPanel.currentPerson.getHoliday(time).setNumber(value);
+					String activity = "Congés & Absences";
+					String mission = "TTR GÉNÉRIQUE";
+					
+					final AsyncCallback<Allocation> PUT_PERSON_ALLOCATION_CALLBACK = new AsyncCallback<Allocation>() {
+	
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert("Impossible de mettre à jour!");
+						}
+	
+						@Override
+						public void onSuccess(Allocation result) {	
+						};
+					};		
+	//				Window.alert(PartagedDataBetweenPanel.currentPerson.getName()+" "+monthNumber+" "+value);
+					MiroAccessDB.putPersonAllocation(PartagedDataBetweenPanel.currentPerson.getName(),
+													 mission,
+													 activity,
+													 monthNumber,
+													 value,
+													 PUT_PERSON_ALLOCATION_CALLBACK);
+					break;
+				}
+				case 3:{
+					PartagedDataBetweenPanel.currentPerson.getTraining(time).setNumber(value);
+					String activity = "Formations";
+					String mission = "TTR GÉNÉRIQUE";
+					
+					final AsyncCallback<Allocation> PUT_PERSON_ALLOCATION_CALLBACK = new AsyncCallback<Allocation>() {
+	
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert("Impossible de mettre à jour!");
+						}
+	
+						@Override
+						public void onSuccess(Allocation result) {	
+						};
+					};		
+	//				Window.alert(PartagedDataBetweenPanel.currentPerson.getName()+" "+monthNumber+" "+value);
+					MiroAccessDB.putPersonAllocation(PartagedDataBetweenPanel.currentPerson.getName(),
+													 mission,
+													 activity,
+													 monthNumber,
+													 value,
+													 PUT_PERSON_ALLOCATION_CALLBACK);
+					break;
+				}
+				case 4:{
+					PartagedDataBetweenPanel.currentPerson.getOther(time).setNumber(value);
+					String activity = "Activités Hors Projets";
+					String mission = "TTR GÉNÉRIQUE";
+					
+					final AsyncCallback<Allocation> PUT_PERSON_ALLOCATION_CALLBACK = new AsyncCallback<Allocation>() {
+	
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert("Impossible de mettre à jour!");
+						}
+	
+						@Override
+						public void onSuccess(Allocation result) {	
+						};
+					};		
+	//				Window.alert(PartagedDataBetweenPanel.currentPerson.getName()+" "+monthNumber+" "+value);
+					MiroAccessDB.putPersonAllocation(PartagedDataBetweenPanel.currentPerson.getName(),
+													 mission,
+													 activity,
+													 monthNumber,
+													 value,
+													 PUT_PERSON_ALLOCATION_CALLBACK);				
+					break;
+				}
+			}	
+		}		
 	}
 	
 	private class MyProjectListener implements ChangeHandler {
@@ -845,8 +665,7 @@ public class CenterPanel extends Composite implements EventListener {
 		int columnNumber = 0;
 		double oldValue = round(0,2);
 
-		public MyProjectListener(int rowNumber, int columnNumber, double oldValue) {
-			
+		public MyProjectListener(int rowNumber, int columnNumber, double oldValue) {	
 			this.rowNumber = rowNumber;
 			this.columnNumber = columnNumber;
 			this.oldValue = round(oldValue,2);
@@ -865,8 +684,7 @@ public class CenterPanel extends Composite implements EventListener {
 			} else {
 				oldValue = value;
 				treatmentOfProject();
-			}
-			
+			}		
 		}
 
 		private void treatmentOfProject() {
@@ -880,74 +698,70 @@ public class CenterPanel extends Composite implements EventListener {
 			String titleOfRow = projectRow.getTitle();
 
 			switch (PartagedDataBetweenPanel.viewType) {
-			case PERSON_VIEW:{
-				assignment = MiroState.getAssignment(PartagedDataBetweenPanel.currentPerson, new Project(titleOfRow));
-				assignment.setPrestation(columnNumber - 1, record);
-				refreshCalcRowList();
-				refreshStyleOfTotalPourcentRow();
-				refreshStyleOfKPIRow();
-				refreshStyleOfSumColumn();
-				
-				String activity = "Projets";
-				String mission = titleOfRow;
-				
-				final AsyncCallback<Allocation> PUT_PERSON_ALLOCATION_CALLBACK = new AsyncCallback<Allocation>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert("Impossible de mettre à jour!");
-					}
-
-					@Override
-					public void onSuccess(Allocation result) {	
-					};
-				};		
-//				Window.alert(PartagedDataBetweenPanel.currentPerson.getName()+" "+mission+" "+month+" "+oldValue);
-				MiroAccessDB.putPersonAllocation(PartagedDataBetweenPanel.currentPerson.getName(),
-												 mission,
-												 activity,
-												 month,
-												 oldValue,
-												 PUT_PERSON_ALLOCATION_CALLBACK);				
-				break;
+				case PERSON_VIEW:{
+					assignment = MiroState.getAssignment(PartagedDataBetweenPanel.currentPerson, new Project(titleOfRow));
+					assignment.setPrestation(columnNumber - 1, record);
+					refreshCalcRowList();
+					refreshStyleOfSumColumn();
+					
+					String activity = "Projets";
+					String mission = titleOfRow;
+					
+					final AsyncCallback<Allocation> PUT_PERSON_ALLOCATION_CALLBACK = new AsyncCallback<Allocation>() {
+	
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert("Impossible de mettre à jour!");
+						}
+	
+						@Override
+						public void onSuccess(Allocation result) {	
+						};
+					};		
+	//				Window.alert(PartagedDataBetweenPanel.currentPerson.getName()+" "+mission+" "+month+" "+oldValue);
+					MiroAccessDB.putPersonAllocation(PartagedDataBetweenPanel.currentPerson.getName(),
+													 mission,
+													 activity,
+													 month,
+													 oldValue,
+													 PUT_PERSON_ALLOCATION_CALLBACK);				
+					break;
 				}
-			case PROJECT_VIEW:{
-				String personName = titleOfRow;
-				assignment = MiroState.getAssignment(new Person(personName), PartagedDataBetweenPanel.currentProject);
-				assignment.setPrestation(columnNumber - 1, record);
-				refreshCalcRowForProjectView();
-				refreshStyleOfSumColumn();
-				
-				String activity = "Projets";
-				String mission = PartagedDataBetweenPanel.currentProject.getName();
-				
-				final AsyncCallback<Allocation> PUT_PERSON_ALLOCATION_CALLBACK = new AsyncCallback<Allocation>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert("Impossible de mettre à jour!");
-					}
-
-					@Override
-					public void onSuccess(Allocation result) {	
-					};
-				};		
-//				Window.alert(personName+" "+mission+" "+month+" "+oldValue);
-				MiroAccessDB.putPersonAllocation(personName,
-												 mission,
-												 activity,
-												 month,
-												 oldValue,
-												 PUT_PERSON_ALLOCATION_CALLBACK);				
-				
-				break;
+				case PROJECT_VIEW:{
+					String personName = titleOfRow;
+					assignment = MiroState.getAssignment(new Person(personName), PartagedDataBetweenPanel.currentProject);
+					assignment.setPrestation(columnNumber - 1, record);
+					refreshCalcRowForProjectView();
+					refreshStyleOfSumColumn();
+					
+					String activity = "Projets";
+					String mission = PartagedDataBetweenPanel.currentProject.getName();
+					
+					final AsyncCallback<Allocation> PUT_PERSON_ALLOCATION_CALLBACK = new AsyncCallback<Allocation>() {
+	
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert("Impossible de mettre à jour!");
+						}
+	
+						@Override
+						public void onSuccess(Allocation result) {	
+						};
+					};		
+	//				Window.alert(personName+" "+mission+" "+month+" "+oldValue);
+					MiroAccessDB.putPersonAllocation(personName,
+													 mission,
+													 activity,
+													 month,
+													 oldValue,
+													 PUT_PERSON_ALLOCATION_CALLBACK);				
+					
+					break;
 				}
 			}
 			double sumOfTheProjectRow = round(projectRow.sumRow(),2);
 			projectRow.setElementAt(1, sumOfTheProjectRow);
-		
 		}
-	
 	}
 
 	private class switchingViewListener implements ClickHandler {
@@ -961,8 +775,7 @@ public class CenterPanel extends Composite implements EventListener {
 
 		@Override
 		public void onClick(ClickEvent event) {
-			
-			
+				
 			PartagedDataBetweenPanel.hasChangedView = true;
 
 			switch (PartagedDataBetweenPanel.viewType) {
@@ -978,8 +791,7 @@ public class CenterPanel extends Composite implements EventListener {
 				break;
 			}
 			refreshCenterPanel();
-			notifyListeners();
-		
+			notifyListeners();		
 		}
 	}
 	

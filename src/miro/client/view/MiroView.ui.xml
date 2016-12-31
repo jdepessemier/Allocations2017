@@ -3,19 +3,14 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:miroView='urn:import:miro.client.view'>
 
 	<g:DockLayoutPanel unit='EM'>
-
 		<g:north size="9">
-			<g:Image url="banniereCIRB.jpg" />
+			<g:Image url="cirb-brussels-it-is-for-you.png" />
 		</g:north>
-
 		<g:center>
 			<miroView:AuthentificationBox />
 		</g:center>
-
 		<g:south size="9">
-			<g:Image
-				url="http://code.google.com/appengine/images/appengine-noborder-120x30.gif" />
+			<g:Image url="cirb-brussels-it-is-for-you-footer.png" />
 		</g:south>
-
 	</g:DockLayoutPanel>
 </ui:UiBinder> 

@@ -16,7 +16,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Grid;
@@ -49,10 +48,6 @@ public class AuthentificationBox extends Composite {
 	private PasswordTextBox passwordField = new PasswordTextBox();
 
 	private Button validateBtn = new Button("Valider");
-	private Button cancelBtn = new Button("Annuler");
-
-	private CheckBox anonymousBox = new CheckBox("Anonymous");
-	private boolean isAnonymousBoxChecked = false;
 
 	private static List<EventListener> listenersList = new ArrayList<EventListener>();
 	private List<Connection> connectionList;
@@ -113,8 +108,6 @@ public class AuthentificationBox extends Composite {
 		componentsGrid.setWidget(1, 0, labPassword);
 		componentsGrid.setWidget(1, 1, passwordField);
 		componentsGrid.setWidget(2, 0, validateBtn);
-		componentsGrid.setWidget(2, 1, cancelBtn);
-		componentsGrid.setWidget(2, 2, anonymousBox);
 	}
 
 	private void initComponents() {
@@ -129,24 +122,6 @@ public class AuthentificationBox extends Composite {
 
 	private void initListeners() {
 		
-		anonymousBox.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				isAnonymousBoxChecked = !isAnonymousBoxChecked;
-
-				usernameChoiceList.setEnabled(!isAnonymousBoxChecked);
-				passwordField.setEnabled(!isAnonymousBoxChecked);
-				validateBtn.setEnabled(isAnonymousBoxChecked);
-
-				if (!isAnonymousBoxChecked) {
-					boolean isFirstSelectedInUsernameChoiceList = usernameChoiceList.getSelectedIndex() == 0;
-					passwordField.setEnabled(!isFirstSelectedInUsernameChoiceList);
-					validateBtn.setEnabled(!isFirstSelectedInUsernameChoiceList);
-				}
-			}
-		});
-
 		usernameChoiceList.addChangeHandler(new ChangeHandler() {
 
 			@Override
@@ -165,18 +140,7 @@ public class AuthentificationBox extends Composite {
 				manageClickOnValidateButton();
 			}
 		});
-		
-	
-
-		cancelBtn.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				PartagedDataBetweenPanel.isReadOnly = true;
-				notifyListeners();
-			}
-		});
-		
+			
 		SubmitListener sl = new SubmitListener();
 		passwordField.addKeyboardListener(sl);
 	}
@@ -190,12 +154,6 @@ public class AuthentificationBox extends Composite {
 
 	private void manageClickOnValidateButton() {
 		// if an user request an anonymous connection,read-only access
-		if (isAnonymousBoxChecked) {
-
-			PartagedDataBetweenPanel.isReadOnly = true;
-			notifyListeners();
-
-		} else {
 
 			int selectedIndex = usernameChoiceList.getSelectedIndex();
 			String lastAndFirstName = usernameChoiceList.getItemText(selectedIndex);
@@ -210,7 +168,6 @@ public class AuthentificationBox extends Composite {
 			} else {
 				Window.alert("Mot de passe incorrect !");
 			}
-		}
 	}
 	
 	@SuppressWarnings("deprecation")

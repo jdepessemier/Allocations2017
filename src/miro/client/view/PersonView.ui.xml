@@ -6,13 +6,14 @@
 		composants que contient le DockLayout
 	-->
 	<g:DockLayoutPanel unit='EM'>
-
-		<g:north size="5">
+		<g:north size="8">
 			<miroView:TopPanel />
 		</g:north>
-
 		<g:center>
 			<miroView:CenterPanel />
 		</g:center>
+		<g:south size="9">
+			<g:Image url="cirb-brussels-it-is-for-you-footer.png" />
+		</g:south>
 	</g:DockLayoutPanel>
 </ui:UiBinder>

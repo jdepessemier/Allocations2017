@@ -2,6 +2,7 @@ package miro.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.Embedded;
@@ -23,6 +24,14 @@ public class Person implements Serializable, Comparable {
 	// liste des prestations pour les activites hors-projets
 	@Embedded
 	private List<Record> otherList = new ArrayList<Record>();
+	
+    public static class OrderByPersonName implements Comparator<Person> {
+
+        @Override
+        public int compare(Person o1, Person o2) {
+            return o1.personName.compareTo(o2.personName);
+        }
+    }
 
 	public Person() {
 		initLists();

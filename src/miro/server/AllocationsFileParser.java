@@ -72,24 +72,26 @@ public class AllocationsFileParser {
         if (activityName.equalsIgnoreCase("OTHERS")){
         	activityName = "Activités Hors Projets";
         }
- 
+        
         if ((!personFullName.equalsIgnoreCase("Auquiere Eric")) &&
-        	(!personFullName.equalsIgnoreCase("Castremanne Cédric")) &&	
-        	(!personFullName.equalsIgnoreCase("Latiers Mathieu")) &&
-        	(!personFullName.equalsIgnoreCase("Maquet Michèle")) &&
-   			(!personFullName.equalsIgnoreCase("Deurbroeck Véronique")) &&
-   			(!personFullName.equalsIgnoreCase("Michel Bernard")) &&
+       	    (!personFullName.equalsIgnoreCase("Pierre Dominique")) &&
+       		(!personFullName.equalsIgnoreCase("Gabriel Willems")) &&
+       		(!personFullName.equalsIgnoreCase("De Pessemier Johan")) &&
+       		(!personFullName.equalsIgnoreCase("De Pauw Nele")) &&
+       		(!personFullName.equalsIgnoreCase("Deurbroeck Véronique")) &&
+       		(!personFullName.equalsIgnoreCase("Gahinyuza Natacha")) &&
+       		(!personFullName.equalsIgnoreCase("Leroy Mickael")) &&
+       		(!personFullName.equalsIgnoreCase("Maquet Michèle")) &&
+       		(!personFullName.equalsIgnoreCase("Melani Jaber")) &&
+       		(!personFullName.equalsIgnoreCase("Michel Bernard")) &&
    			(!personFullName.equalsIgnoreCase("Mozafari Ghasem")) &&
    			(!personFullName.equalsIgnoreCase("Rasoazananiary Odette")) &&
-   			(!personFullName.equalsIgnoreCase("Sakindi Pontien")) &&
-   			(!personFullName.equalsIgnoreCase("Van den Broucke Koen")) &&
-   			(!personFullName.equalsIgnoreCase("Van De Perre Jochen")) && 
-   			(!personFullName.equalsIgnoreCase("Wuidar Freddy")) &&
-   			(!personFullName.equalsIgnoreCase("Reynders Ronald")) &&
    			(!personFullName.equalsIgnoreCase("Smeyers Frédéric")) &&
+   			(!personFullName.equalsIgnoreCase(" SOETAERTS Olivier")) &&
+   			(!personFullName.equalsIgnoreCase("Stieman Arnaud")) &&
    			(!personFullName.equalsIgnoreCase("Taskov Paul")) &&
-   			(!personFullName.equalsIgnoreCase("Pierre Dominique")) &&
-        	(!personFullName.equalsIgnoreCase("De Pessemier Johan"))) {      	
+   			(!personFullName.equalsIgnoreCase("Van den Broucke Koen")) && 			
+        	(!personFullName.equalsIgnoreCase("Wuidar Freddy"))) {      	
         	
         	personFullName = personFullName.toUpperCase();
         	personFullName = StringUtil.trimLeft(personFullName);
@@ -98,8 +100,7 @@ public class AllocationsFileParser {
         	missionName = missionName.toUpperCase();
         	missionName = StringUtil.trimLeft(missionName);
         	missionName = StringUtil.trimRight(missionName);
-        	
-        	
+        	       	
         	putAllocationData(personFullName,missionName,activityName,index, value);
         } 
     }

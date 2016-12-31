@@ -11,8 +11,7 @@
 	</ui:style>
 
 	<g:ScrollPanel>
-		<g:FlexTable ui:field="personArray" styleName="{style.flexTable}"
-			cellSpacing="0" cellPadding="0" />
+		<g:FlexTable ui:field="personArray" styleName="{style.flexTable}" cellSpacing="0" cellPadding="0" />
 	</g:ScrollPanel>
 
 </ui:UiBinder>

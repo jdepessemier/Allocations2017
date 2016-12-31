@@ -1,6 +1,7 @@
 package miro.shared;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import javax.persistence.Embedded;
 import javax.persistence.Id;
@@ -21,6 +22,14 @@ public class Assignment implements Serializable {
 
 	@Embedded
 	private Record[] recordListOfPrestation = new Record[12];
+	
+    public static class OrderByName implements Comparator<Assignment> {
+
+        @Override
+        public int compare(Assignment o1, Assignment o2) {
+            return o1.person.getName().compareTo(o2.person.getName());
+        }
+    }
 
 	/**
 	 * Defines a Assignment with a project and a person with null value
@@ -67,6 +76,22 @@ public class Assignment implements Serializable {
 		this.person = person;
 	}
 
+	public int compareTo(Object arg0) {
+
+		if (arg0 instanceof Assignment) {
+			Assignment assignment = (Assignment) arg0;
+			int compare = assignment.person.getName().compareTo(assignment.person.getName());
+
+			if (compare > 0)
+				return 1;
+			if (compare < 0)
+				return -1;
+
+			return 0;
+		}
+		return 1;
+	}
+	
 	public boolean equals(Object o) {
 		boolean isEquals = false;
 

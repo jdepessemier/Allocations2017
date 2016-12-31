@@ -1,10 +1,19 @@
 package miro.shared;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 public class Project implements Serializable, Comparable {
 
 	private String name;
+	
+    public static class OrderByName implements Comparator<Project> {
+
+        @Override
+        public int compare(Project o1, Project o2) {
+            return o1.name.compareTo(o2.name);
+        }
+    }
 
 	public Project() {
 		name = "";

@@ -23,24 +23,24 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 
 public class TopPanel extends Composite implements EventListener {
 
 	interface TopPanelUiBinder extends UiBinder<AbsolutePanel, TopPanel> {}
 	static TopPanelUiBinder ourUiBinder = GWT.create(TopPanelUiBinder.class);
+	
+	@UiField
+	Image cirbImage;
 
 	@UiField
 	Label labelSelectPersonOrProject;
-
-	@UiField
-	Label labelImportFile;
 
 	@UiField
 	ListBox personOrProjectListBox;
@@ -55,8 +55,10 @@ public class TopPanel extends Composite implements EventListener {
 	private List<Project> projectList;
 
 	private Button importButton = new Button("IMPORT");
+	
 	@UiField
 	Image excelImage;
+	
 	@UiField
 	Image csvImage;
 	
@@ -66,8 +68,7 @@ public class TopPanel extends Composite implements EventListener {
 
 		initWidget(ourUiBinder.createAndBindUi(this));
 		initTopPanel();
-		CenterPanel.addEventListener(this);
-		
+		CenterPanel.addEventListener(this);	
 	}
 
 	private void initTopPanel() {
@@ -76,22 +77,15 @@ public class TopPanel extends Composite implements EventListener {
 
 		boolean isReadOnly = PartagedDataBetweenPanel.isReadOnly;
 
-		labelImportFile.setVisible(!isReadOnly);
 		formPanel.setVisible(!isReadOnly);
 		if (PartagedDataBetweenPanel.currentUser.equals("PROJECT")) {
-			labelImportFile.setVisible(false);
 			formPanel.setVisible(false);
 			csvImage.setVisible(false);
 		}
 
 		refreshPersonOrProjectChoiceList();
-		initListeners();
-		
+		initListeners();	
 	}
-
-	
-
-	
 
 	public static void addEventListener(EventListener eventListener) {
 		
@@ -107,13 +101,14 @@ public class TopPanel extends Composite implements EventListener {
 
 	private void initAbsolutePanel() {
 		
-		absolutePanel.setSize("1300px", "78px");
-		absolutePanel.setWidgetPosition(labelSelectPersonOrProject, 25, 15);
-		absolutePanel.setWidgetPosition(personOrProjectListBox, 170, 15);
-		absolutePanel.setWidgetPosition(labelImportFile, 500, 15);
-		absolutePanel.setWidgetPosition(formPanel, 750, 15);
+		absolutePanel.setSize("1280px", "96px");
+		absolutePanel.setWidgetPosition(csvImage, 0, 15);
+		absolutePanel.setWidgetPosition(labelSelectPersonOrProject, 345, 15);
+		absolutePanel.setWidgetPosition(personOrProjectListBox, 450, 15);
+		absolutePanel.setWidgetPosition(formPanel, 800, 15);
 		absolutePanel.setWidgetPosition(excelImage, 1200, 20);
-		absolutePanel.setWidgetPosition(csvImage, 1263, 15);
+		absolutePanel.setWidgetPosition(csvImage, 1240, 15);
+		
 		FileUpload fileUpload = new FileUpload();
 		fileUpload.setName("uploadFormElement");
 
@@ -133,10 +128,10 @@ public class TopPanel extends Composite implements EventListener {
 
 		switch (PartagedDataBetweenPanel.viewType) {
 		case PERSON_VIEW:
-			labelSelectPersonOrProject.setText("Choix de la personne : ");
+			labelSelectPersonOrProject.setText("Personne ? : ");
 			break;
 		case PROJECT_VIEW:
-			labelSelectPersonOrProject.setText("Choix du projet : ");
+			labelSelectPersonOrProject.setText("Projet ? : ");
 			break;
 		}
 	}
@@ -162,6 +157,7 @@ public class TopPanel extends Composite implements EventListener {
 			}
 			break;
 		}
+		
 		boolean isFound = false;
 		int index = 1;
 		while (!isFound && index < personOrProjectListBox.getItemCount()) {
@@ -192,7 +188,6 @@ public class TopPanel extends Composite implements EventListener {
 					}
 				} else {
 					excelImage.setVisible(false);
-
 					switch (PartagedDataBetweenPanel.viewType) {
 					case PERSON_VIEW:
 						PartagedDataBetweenPanel.currentPerson = null;
@@ -224,15 +219,15 @@ public class TopPanel extends Composite implements EventListener {
 				{
 					switch (PartagedDataBetweenPanel.viewType) {
 					case PERSON_VIEW:
+//						Window.alert(PartagedDataBetweenPanel.currentPerson.getName());
 						Window.Location.replace(GWT.getModuleBaseURL()+"export?name="+PartagedDataBetweenPanel.currentPerson.getName());
 						break;
 					case PROJECT_VIEW:
+//						Window.alert(PartagedDataBetweenPanel.currentProject.getName());
 						Window.Location.replace(GWT.getModuleBaseURL()+"export?name="+PartagedDataBetweenPanel.currentProject.getName());
 						break;
 					}
-				}
-			    
-			    
+				}	    
 			}
 		});
 		
@@ -307,7 +302,6 @@ public class TopPanel extends Composite implements EventListener {
 	public void notifyChange(Widget widget) {
 
 		if (PartagedDataBetweenPanel.isReadOnly) {
-			labelImportFile.setVisible(false);
 			formPanel.setVisible(false);
 		} 
 		refreshLabPersonOrProjectChoice();

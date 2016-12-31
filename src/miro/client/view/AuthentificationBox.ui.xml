@@ -4,4 +4,5 @@
 
 	<g:DialogBox text="Authentification" ui:field="dialogBox">
 	</g:DialogBox>
+	
 </ui:UiBinder> 

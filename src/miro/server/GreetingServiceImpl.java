@@ -36,20 +36,15 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		Objectify ofy = ObjectifyService.begin();
 
 		if (ofy.query(Connection.class).countAll() == 0) {
-
 			Objectify obj = ObjectifyService.beginTransaction();
 			obj.put(new Connection("DE PESSEMIER", "Johan", "stw657"));
 			obj.getTxn().commit();
 			obj = ObjectifyService.beginTransaction();
-			obj.put(new Connection("AUQUIERE", "Eric", "stw657"));
-			obj.getTxn().commit();
-			obj = ObjectifyService.beginTransaction();
-			obj.put(new Connection("PROJECT", "MANAGER", "dbj409"));
+			obj.put(new Connection("Manager", "Project", "dbj409"));
 			obj.getTxn().commit();
 		}
 
 		if (ofy.query(Lock.class).countAll() == 0) {
-
 			Objectify obj = ObjectifyService.beginTransaction();
 			obj.put(new Lock(1l));
 			obj.getTxn().commit();
@@ -103,7 +98,6 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		return allocationsList;
 	}
 	
-
 	public Allocation putPersonAllocation(String personname,
 										  String missionname,
 										  String activityname, 

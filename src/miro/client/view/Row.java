@@ -1,11 +1,21 @@
 package miro.client.view;
 
+import java.util.Comparator;
+
 import com.google.gwt.user.client.ui.TextBox;
 
 public class Row {
 	private String title;
 	private final int SIZE_OF_ARRAY = 14;
 	protected TextBox[] arrayForARow;
+	
+    public static class OrderByTitle implements Comparator<Row> {
+
+        @Override
+        public int compare(Row o1, Row o2) {
+            return o1.title.compareTo(o2.title);
+        }
+    }
 
 	public Row() {
 		arrayForARow = new TextBox[SIZE_OF_ARRAY];
@@ -55,4 +65,20 @@ public class Row {
 	public String getTitle() {
 		return title;
 	}
+	
+	public int compareTo(Object arg0) {
+
+		if (arg0 instanceof Row) {
+			Row row = (Row) arg0;
+			int compare = title.compareTo(row.title);
+
+			if (compare > 0)
+				return 1;
+			if (compare < 0)
+				return -1;
+			return 0;
+		}
+		return 1;
+	}
+	
 }

@@ -17,7 +17,7 @@ import miro.shared.Allocation;
 
 public class DBdumpCreator {
 
-	private List <Allocation>allocations;
+	private List <Allocation> allocations;
 	private WritableSheet sheet ;
 
 
@@ -49,7 +49,7 @@ public class DBdumpCreator {
 			  for(int i=0;i<12;i++)
 			  {
 					sheet.addCell(new Label(0, row, allocation.getPersonFullName(), headerInformationFormat));
-					sheet.addCell(new Label(1, row, "2011", headerInformationFormat));
+					sheet.addCell(new Label(1, row, "2017", headerInformationFormat));
 					sheet.addCell(new Label(2, row, String.valueOf(i+1), headerInformationFormat));
 					
 					String type="";

@@ -213,6 +213,7 @@ public class MiroState {
 				assignment.setPerson(retrievedPerson);
 			}
 		}
+		Collections.sort(assignmentList, new Assignment.OrderByName());
 		return assignmentList;
 	}
 	
@@ -234,8 +235,8 @@ public class MiroState {
 				personList.add(personFromAssignment);
 			}
 		}
-		Collections.sort(personList);
-	}
+		Collections.sort(personList, new Person.OrderByPersonName());
+	}	
 
 	static void addAssignment(Assignment assignment) {
 		if (assignment != null)
@@ -253,7 +254,7 @@ public class MiroState {
 				projectList.add(projectFromAssignment);
 			}
 		}
-		Collections.sort(projectList);
+		Collections.sort(projectList, new Project.OrderByName());
 	}
 
 	public static Project getProject(String projectName) {

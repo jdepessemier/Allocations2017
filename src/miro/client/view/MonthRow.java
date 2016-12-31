@@ -3,13 +3,12 @@ package miro.client.view;
 import com.google.gwt.user.client.ui.TextBox;
 
 public class MonthRow extends Row {
+	
 	private int currentYear;
 
 	public MonthRow(int year) {
 		super();
-
 		this.currentYear = year;
-
 		initArray();
 		disableCells();
 	}
