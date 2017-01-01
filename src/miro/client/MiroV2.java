@@ -6,7 +6,6 @@ public class MiroV2 {
 
 	private MiroView miroView;
 	
-
 	public void onModuleLoad() {
 		miroView = new MiroView();
 	}
