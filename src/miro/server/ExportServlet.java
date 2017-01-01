@@ -22,7 +22,6 @@ public class ExportServlet extends HttpServlet {
 	  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	    try {
 		 String nom = request.getParameter("name");
-		 boolean excell=true;
 		 
 	      // Get Excel Data
 	      ByteArrayOutputStream bytes=null;
