@@ -93,6 +93,14 @@ public class AllocationsFileParser {
    			(!personFullName.equalsIgnoreCase("Van den Broucke Koen")) && 			
         	(!personFullName.equalsIgnoreCase("Wuidar Freddy"))) {      	
         	
+        	if (personFullName.equalsIgnoreCase("Geoffrey Vancauwenbergh")) {
+        		personFullName = "Vancauwenbergh Geoffrey";
+        	}
+        	
+        	if (personFullName.equalsIgnoreCase("Rosa Mary Pereira Rodriguez")) {
+        		personFullName = "Pereira Mary";
+        	}
+        	
         	personFullName = personFullName.toUpperCase();
         	personFullName = StringUtil.trimLeft(personFullName);
         	personFullName = StringUtil.trimRight(personFullName);
