@@ -1,7 +1,6 @@
 package miro.client.view;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import miro.client.db.MiroAccessDB;
@@ -250,6 +249,7 @@ public class CenterPanel extends Composite implements EventListener {
 				personOrProjectName = assignment.getPerson().getName();
 				break;
 			}
+			
 			ProjectRow projectRow = new ProjectRow(personOrProjectName);
 
 			((TextBox) projectRow.getElementAt(0)).setStyleName("titleOfFirstColumnProject");
@@ -269,7 +269,7 @@ public class CenterPanel extends Composite implements EventListener {
 						
 			projectRowList.add(projectRow);
 			
-			Collections.sort(projectRowList, new ProjectRow.OrderByTitle());
+//			Collections.sort(projectRowList, new ProjectRow.OrderByTitle());
 		}
 	
 	}
@@ -416,7 +416,7 @@ public class CenterPanel extends Composite implements EventListener {
 		case PROJECTROW:
 			personArray.insertRow(startIndex);
 			
-			Collections.sort(projectRowList, new ProjectRow.OrderByTitle());
+//			Collections.sort(projectRowList, new ProjectRow.OrderByTitle());
 			
 //			for (int i = 0; i < (projectRowList.size()); i++) {
 //				Window.alert(projectRowList.get(i).getTitle());
@@ -677,11 +677,13 @@ public class CenterPanel extends Composite implements EventListener {
 			String valueOfTextBox = textBoxOfEvent.getText();
 			
 			double value = round(Double.valueOf(valueOfTextBox),2);
+			
 
 			if (value < 0) {
 				Window.alert("Valeur negative interdite !");
 				textBoxOfEvent.setText("" + oldValue);
 			} else {
+
 				oldValue = value;
 				treatmentOfProject();
 			}		
@@ -693,9 +695,13 @@ public class CenterPanel extends Composite implements EventListener {
 			int month = time.getMonth();
 			Record record = new Record(oldValue, time);
 			Assignment assignment = null;
-
+			
+ //    		Window.alert(Integer.toString(rowNumber));
+			
 			ProjectRow projectRow = projectRowList.get(rowNumber);
 			String titleOfRow = projectRow.getTitle();
+			
+//			Window.alert(projectRow.getTitle());
 
 			switch (PartagedDataBetweenPanel.viewType) {
 				case PERSON_VIEW:{
@@ -718,7 +724,7 @@ public class CenterPanel extends Composite implements EventListener {
 						public void onSuccess(Allocation result) {	
 						};
 					};		
-	//				Window.alert(PartagedDataBetweenPanel.currentPerson.getName()+" "+mission+" "+month+" "+oldValue);
+ //				    Window.alert(PartagedDataBetweenPanel.currentPerson.getName()+" "+mission+" "+month+" "+oldValue);
 					MiroAccessDB.putPersonAllocation(PartagedDataBetweenPanel.currentPerson.getName(),
 													 mission,
 													 activity,
@@ -748,7 +754,7 @@ public class CenterPanel extends Composite implements EventListener {
 						public void onSuccess(Allocation result) {	
 						};
 					};		
-	//				Window.alert(personName+" "+mission+" "+month+" "+oldValue);
+//					Window.alert(personName+" "+mission+" "+month+" "+oldValue);
 					MiroAccessDB.putPersonAllocation(personName,
 													 mission,
 													 activity,

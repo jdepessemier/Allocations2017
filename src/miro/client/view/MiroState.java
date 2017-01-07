@@ -213,7 +213,7 @@ public class MiroState {
 				assignment.setPerson(retrievedPerson);
 			}
 		}
-		Collections.sort(assignmentList, new Assignment.OrderByName());
+//		Collections.sort(assignmentList, new Assignment.OrderByName());
 		return assignmentList;
 	}
 	

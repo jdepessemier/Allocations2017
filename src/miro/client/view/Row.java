@@ -1,7 +1,5 @@
 package miro.client.view;
 
-import java.util.Comparator;
-
 import com.google.gwt.user.client.ui.TextBox;
 
 public class Row {
@@ -9,13 +7,13 @@ public class Row {
 	private final int SIZE_OF_ARRAY = 14;
 	protected TextBox[] arrayForARow;
 	
-    public static class OrderByTitle implements Comparator<Row> {
-
-        @Override
-        public int compare(Row o1, Row o2) {
-            return o1.title.compareTo(o2.title);
-        }
-    }
+//    public static class OrderByTitle implements Comparator<Row> {
+//
+//        @Override
+//        public int compare(Row o1, Row o2) {
+//            return o1.title.compareTo(o2.title);
+//        }
+//    }
 
 	public Row() {
 		arrayForARow = new TextBox[SIZE_OF_ARRAY];
