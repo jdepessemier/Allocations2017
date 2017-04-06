@@ -88,6 +88,7 @@ public class AllocationsFileParser {
    			(!personFullName.equalsIgnoreCase("Rasoazananiary Odette")) &&
    			(!personFullName.equalsIgnoreCase("Smeyers Frédéric")) &&
    			(!personFullName.equalsIgnoreCase(" SOETAERTS Olivier")) &&
+   			(!personFullName.equalsIgnoreCase(" VERTOMMEN Eric")) &&
    			(!personFullName.equalsIgnoreCase("Stieman Arnaud")) &&
    			(!personFullName.equalsIgnoreCase("Taskov Paul")) &&
    			(!personFullName.equalsIgnoreCase("Van den Broucke Koen")) && 			
